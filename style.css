@@ -1,0 +1,146 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  font-family: Roboto;
+}
+
+html, body {
+  height: 100%;
+}
+
+#table {
+  height: 100%;
+  background-color: rgb(0, 55, 0);
+  padding-top: 7vh;
+  display: flex;
+  justify-content: center;
+}
+
+#left-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+  color: white;
+  gap: 1vh;
+  margin-bottom: 6vh;
+}
+
+.line {
+  width: 7.5rem;
+  height: 0.5rem;
+  background-color: yellow;
+  border-radius: 0.25rem;
+}
+
+.orange-text {
+  color: rgb(255, 75, 0);
+}
+
+#dealer-hand,
+#player-hand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.card {
+  width: 13%;
+}
+
+#title {
+  margin-top: 2vh;
+  margin-bottom: 4vh;
+  text-align: center;
+  font-size: 4rem;
+  color: rgb(243, 166, 0);
+}
+
+#side-bets {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2vw;
+  margin-top: 4vh;
+}
+
+.bet-container {
+  width: 75px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#pair-plus-bet,
+#six-card-bonus-bet {
+  border: 2px solid;
+  border-radius: 50%;
+  text-align: center;
+}
+
+#pair-plus-bet {
+  color: yellow;
+}
+
+#six-card-bonus-bet {
+  color: white;
+}
+
+#main-bets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4.5vh;
+  margin-top: 2vh;
+}
+
+.bet-border {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgb(255, 75, 0);
+  transform: rotate(45deg);
+}
+
+.bet-text {
+  color:rgb(255, 75, 0);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+#right-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 3vh;
+  margin-bottom: 6vh;
+}
+
+#pair-plus-payout-table {
+  color: yellow;
+}
+
+#ante-bonus-payout-table {
+  color: rgb(255, 75, 0);
+}
+
+#six-card-bonus-payout-table {
+  color: white;
+}
+
+.payout-table-title {
+  text-align: center;
+  margin-bottom: 0.5vh;
+}
+
+.payout-table-row {
+  display: flex;
+  width: 15vw;
+  justify-content: space-between;
+}

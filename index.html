@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three Card Poker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="table">
+    <div id="left-section">
+      <p><scan class="orange-text">Play</scan class="orange-text"> MUST EQUAL <scan class="orange-text">Ante</scan></p>
+      <div class="line"></div>
+      <p>DEALER PLAYS WITH QUEEN HIGH OR BETTER</p>
+      <div class="line"></div>
+      <p>WHEN DEALER DOES NOT PLAY</p>
+      <p><scan class="orange-text">Play...</scan> PUSH &#9679;<scan class="orange-text"> Ante...</scan> 1 to 1</p>
+      <div class="line"></div>
+      <p>WHEN DEALER PLAYS</p>
+      <p><scan class="orange-text">Play...</scan> 1 to 1 &#9679;<scan class="orange-text"> Ante...</scan> 1 to 1</p>
+    </div>
+    <div id="middle-section">
+      <div id="dealer-hand">
+        <img id="dealer-card-1" class="card" src="cards/10_of_clubs.svg">
+        <img id="dealer-card-2" class="card" src="cards/3_of_diamonds.svg">
+        <img id="dealer-card-3" class="card" src="cards/king_of_hearts.svg">
+      </div>
+      <div id="title">THREE CARD POKER</div>
+      <div id="player-hand">
+        <img id="player-card-1" class="card" src="cards/ace_of_spades.svg">
+        <img id="player-card-2" class="card" src="cards/2_of_spades.svg">
+        <img id="player-card-3" class="card" src="cards/3_of_spades.svg">
+      </div>
+      <div id="bet-area">
+        <div id="side-bets">
+          <div id="pair-plus-bet" class="bet-container bet-text">Pair Plus</div>
+          <div id="six-card-bonus-bet" class="bet-container bet-text">6 Card Bonus</div>
+        </div>
+        <div id="main-bets">
+          <div id="ante-bet" class="bet-container">
+            <div class="bet-border"></div>
+            <div class="bet-text">Ante</div>
+          </div>
+          <div id="play-bet" class="bet-container">
+            <div class="bet-border"></div>
+            <div class="bet-text">Play</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="right-section">
+      <div id="pair-plus-payout-table">
+        <p class="payout-table-title">Pair Plus Pays</p>
+        <div class="payout-table-row">
+          <p>Mini Royal Flush</p>
+          <p>200 to 1</p>
+        </div>
+        <div class="payout-table-row">
+          <p>Straight Flush</p>
+          <p>40 to 1</p>
+        </div>
+        <div class="payout-table-row">
+          <p>Three-of-a-Kind</p>
+          <p>30 to 1</p>
+        </div>
+        <div class="payout-table-row">
+          <p>Straight</p>
+          <p>6 to 1</p>
+        </div>
+        <div class="payout-table-row">
+          <p>Flush</p>
+          <p>3 to 1</p>
+        </div>
+        <div class="payout-table-row">
+          <p>Pair</p>
+          <p>1 to 1</p>
+        </div>
+      </div>
+      <div id="ante-bonus-payout-table">
+        <p class="payout-table-title">Ante Bonus Pays</p>
+        <div id="ante-bonus-body">
+          <div class="payout-table-row">
+            <p>Straight Flush</p>
+            <p>5 to 1</p>
+          </div>
+          <div class="payout-table-row">
+            <p>Three-of-a-Kind</p>
+            <p>4 to 1</p>
+          </div>
+          <div class="payout-table-row">
+            <p>Straight</p>
+            <p>1 to 1</p>
+          </div>
+        </div>
+      </div>
+      <div id="six-card-bonus-payout-table">
+        <p class="payout-table-title">6 Card Bonus Pays</p>
+        <div id="six-card-bonus-body">
+          <div class="payout-table-row">
+            <p>Royal Flush</p>
+            <p>1000 to 1</p>
+          </div>
+          <div class="payout-table-row">
+            <p>Straight Flush</p>
+            <p>200 to 1</p>
+          </div>
+          <div class="payout-table-row">
+            <p>Four-of-a-Kind</p>
+            <p>50 to 1</p>
+          </div>
+          <div class="payout-table-row">
+            <p>Full House</p>
+            <p>25 to 1</p>
+          </div>
+          <div class="payout-table-row">
+            <p>Flush</p>
+            <p>15 to 1</p>
+          </div>
+          <div class="payout-table-row">
+            <p>Straight</p>
+            <p>10 to 1</p>
+          </div>
+          <div class="payout-table-row">
+            <p>Three-of-a-Kind</p>
+            <p>5 to 1</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
