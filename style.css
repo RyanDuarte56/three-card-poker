@@ -114,6 +114,31 @@ html, body {
   font-weight: bold;
 }
 
+#game-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2vw;
+}
+
+#player-bankroll,
+#result-message {
+  color: white;
+}
+
+#buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7.5px;
+}
+
+#play-button,
+#fold-button {
+  padding: 8px 20px;
+}
+
 #right-section {
   display: flex;
   flex-direction: column;
