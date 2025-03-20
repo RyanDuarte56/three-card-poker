@@ -16,20 +16,27 @@ function shuffle(cards) {
   }
 }
 
-shuffle(cards);
+const dealButton = document.getElementById("deal-button");
 
-let dealerCards = [];
-let playerCards = [];
+dealButton.addEventListener("click", () => {
+  shuffle(cards);
+  startGame();
+});
 
-for (let i = 0; i < 3; i++) {
-  playerCards.push(cards[i]);
-  dealerCards.push(cards[i + 3]);
-}
+function startGame() {
+  let dealerCards = [];
+  let playerCards = [];
 
-for (let i = 1; i <= 3; i++) {
-  const dealerCard = document.getElementById(`dealer-card-${i}`);
-  const playerCard = document.getElementById(`player-card-${i}`);
+  for (let i = 0; i < 3; i++) {
+    playerCards.push(cards[i]);
+    dealerCards.push(cards[i + 3]);
+  }
 
-  dealerCard.src = `${dealerCards[i - 1]}`;
-  playerCard.src = `${playerCards[i - 1]}`;
+  for (let i = 1; i <= 3; i++) {
+    const dealerCard = document.getElementById(`dealer-card-${i}`);
+    const playerCard = document.getElementById(`player-card-${i}`);
+
+    dealerCard.src = `${dealerCards[i - 1]}`;
+    playerCard.src = `${playerCards[i - 1]}`;
+  }
 }
