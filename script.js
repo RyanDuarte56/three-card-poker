@@ -1,7 +1,5 @@
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace'];
 const suits = ['spades', 'hearts', 'clubs', 'diamonds'];
-const bankrollElement = document.getElementById('player-bankroll');
-const dealButton = document.getElementById("deal-button");
 
 let cards = [];
 let bankrollValue = 100;
@@ -12,14 +10,6 @@ values.forEach(value => {
   suits.forEach(suit => {
     cards.push(`cards/${value}_of_${suit}.svg`);
   });
-});
-
-
-
-dealButton.addEventListener("click", () => {
-  shuffle(cards);
-  dealCards();
-  handleBets();
 });
 
 function shuffle(cards) {
@@ -48,8 +38,21 @@ function dealCards() {
 }
 
 function handleBets() {
-  const inputValues = Array.from(document.querySelectorAll('input')).map(input => Number(input.value));
+  const inputs = Array.from(document.querySelectorAll('input'));
+  const inputValues = inputs.map(input => Number(input.value));
 
   bankrollValue -= inputValues.reduce((accumulator, value) => accumulator + value, 0); // Soma os valores dos inputs e subtrai do saldo
   bankrollElement.innerHTML = `<p>Bankroll: ${bankrollValue}</p>`;
+
+  inputValues.forEach((value, index) => {
+    const betId = inputs[index].parentElement.id.replace('value', 'bet');
+    const betChip = document.querySelector(`#${betId} .chip`);
+
+    if (value > 0) {
+      betChip.innerText = value;
+      betChip.style.display = 'flex';
+    } else {
+      betChip.style.display = 'none';
+    }
+  })
 }
