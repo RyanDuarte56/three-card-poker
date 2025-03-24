@@ -1,8 +1,16 @@
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace'];
 const suits = ['spades', 'hearts', 'clubs', 'diamonds'];
+const bankrollElement = document.getElementById('player-bankroll');
+const images = document.querySelectorAll('img');
+const dealButton = document.getElementById('deal-button');
+const playButton = document.getElementById('play-button');
+const foldButton = document.getElementById('fold-button');
 
 let cards = [];
+let dealerCards;
+let playerCards;
 let bankrollValue = 100;
+let choseToPlay;
 
 bankrollElement.innerHTML = `<p>Bankroll: ${bankrollValue}</p>`;
 
@@ -12,7 +20,34 @@ values.forEach(value => {
   });
 });
 
-function shuffle(cards) {
+images.forEach(image => {
+  image.src = 'cards/card-back.png';
+});
+
+dealButton.addEventListener('click', startHand);
+
+playButton.addEventListener('click', () => {
+  handlePlayBet();
+  choseToPlay = true;
+  endHand();
+});
+
+foldButton.addEventListener('click', () => {
+  choseToPlay = false;
+  endHand();
+});
+
+function startHand() {
+  dealButton.style.display = 'none';
+  playButton.style.display = 'block';
+  foldButton.style.display = 'block';
+
+  shuffleCards();
+  dealCards();
+  handleBets();
+}
+
+function shuffleCards() {
   for (let i = cards.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1)); // Índice aleatório de 0 a i
     [cards[i], cards[j]] = [cards[j], cards[i]]; // Troca os elementos
@@ -20,8 +55,8 @@ function shuffle(cards) {
 }
 
 function dealCards() {
-  let dealerCards = [];
-  let playerCards = [];
+  dealerCards = [];
+  playerCards = [];
 
   for (let i = 0; i < 3; i++) {
     playerCards.push(cards[i]);
@@ -29,10 +64,7 @@ function dealCards() {
   }
 
   for (let i = 1; i <= 3; i++) {
-    const dealerCard = document.getElementById(`dealer-card-${i}`);
     const playerCard = document.getElementById(`player-card-${i}`);
-
-    dealerCard.src = `${dealerCards[i - 1]}`;
     playerCard.src = `${playerCards[i - 1]}`;
   }
 }
@@ -54,5 +86,23 @@ function handleBets() {
     } else {
       betChip.style.display = 'none';
     }
-  })
+  });
+}
+
+function handlePlayBet() {
+  const betChip = document.querySelector('#play-bet .chip');
+  const betValue = document.querySelector('#ante-bet .chip').innerText;
+
+  betChip.innerText = betValue;
+  betChip.style.display = 'flex';
+
+  bankrollValue -= Number(betValue);
+  bankrollElement.innerHTML = `<p>Bankroll: ${bankrollValue}</p>`;
+}
+
+function endHand() {
+  for (let i = 1; i <= 3; i++) {
+    const dealerCard = document.getElementById(`dealer-card-${i}`);
+    dealerCard.src = `${dealerCards[i - 1]}`;
+  }
 }
