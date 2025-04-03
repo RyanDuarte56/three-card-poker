@@ -1,5 +1,7 @@
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace'];
 const suits = ['spades', 'hearts', 'clubs', 'diamonds'];
+const referenceArray = ['2', '3', 'ace']; // Referência para um A-2-3 Straight
+const rankingOrder = ['High Card', 'Pair', 'Flush', 'Straight', 'Three-of-a-Kind', 'Straight Flush', 'Mini Royal Flush'];
 const bankrollElement = document.getElementById('player-bankroll');
 const images = document.querySelectorAll('img');
 const dealButton = document.getElementById('deal-button');
@@ -11,6 +13,8 @@ const handResultDiv = document.getElementById('hand-result');
 let cards = [];
 let dealerCards;
 let playerCards;
+let dealerHandInfo;
+let playerHandInfo;
 let bankrollValue = 100;
 let choseToPlay;
 
@@ -104,6 +108,12 @@ function handlePlayBet() {
 }
 
 function endHand() {
+  let winner;
+
+  // Info: [cardValues, ranking]
+  dealerHandInfo = rankHand(dealerCards);
+  playerHandInfo = rankHand(playerCards);
+
   for (let i = 1; i <= 3; i++) {
     const dealerCard = document.getElementById(`dealer-card-${i}`);
     dealerCard.src = `${dealerCards[i - 1]}`;
@@ -112,18 +122,36 @@ function endHand() {
   playButton.style.display = 'none';
   foldButton.style.display = 'none';
 
-  handResultDiv.innerHTML = `
-    <p>Dealer: ${rankHand(dealerCards)}</p>
-    <p>Player: ${rankHand(playerCards)}</p>
-  `;
+  if (dealerHandInfo[1] === playerHandInfo[1]) {
+    winner = rankSameHands();
+  } else {
+    if (rankingOrder.indexOf(dealerHandInfo[1]) > rankingOrder.indexOf(playerHandInfo[1])) {
+      winner = 'Dealer';
+    } else {
+      winner = 'Player';
+    }
+  }
+
+  if (winner === 'Tie') {
+    handResultDiv.innerHTML = `
+      <p>Dealer: ${dealerHandInfo[1]}</p>
+      <p>Player: ${playerHandInfo[1]}</p>
+      <p>Tie!</p>
+    `;
+  } else {
+    handResultDiv.innerHTML = `
+      <p>Dealer: ${dealerHandInfo[1]}</p>
+      <p>Player: ${playerHandInfo[1]}</p>
+      <p>${winner} wins!</p>
+    `;
+  }
 }
 
 function rankHand(hand) {
-  const referenceArray = ['2', '3', 'ace']; // Referência para um A-2-3 Straight
-
   let cardValues;
   let cardSuits;
   let cardPairs = [];
+  let ranking;
 
   hand.forEach(card => {
     const cardParts = card.replace('cards/', '').replace('.svg', '').split('_of_');
@@ -137,45 +165,88 @@ function rankHand(hand) {
   cardValues = cardPairs.map(card => card[0]);
   cardSuits = cardPairs.map(card => card[1]);
 
-  // Mini Royal Flush
   if (cardValues[0] === 'queen' &&
       cardValues[1] === 'king' &&
       cardValues[2] === 'ace' &&
       cardSuits.every(suit => suit === cardSuits[0])) {
-    return 'Mini Royal Flush';
+    ranking = 'Mini Royal Flush';
   }
 
-  // Straight Flush
-  if ((values.indexOf(cardValues[1]) === values.indexOf(cardValues[0]) + 1 &&
-      values.indexOf(cardValues[2]) === values.indexOf(cardValues[1]) + 1 ||
-      cardValues.every((value, index) => value === referenceArray[index])) &&
-      cardSuits.every(suit => suit === cardSuits[0])) {
-    return 'Straight Flush';
+  else if ((values.indexOf(cardValues[1]) === values.indexOf(cardValues[0]) + 1 &&
+            values.indexOf(cardValues[2]) === values.indexOf(cardValues[1]) + 1 ||
+            cardValues.every((value, index) => value === referenceArray[index])) &&
+            cardSuits.every(suit => suit === cardSuits[0])) {
+    ranking = 'Straight Flush';
   }
   
-  // Three-of-a-Kind
-  if (cardValues.every(value => value === cardValues[0])) {
-    return 'Three-of-a-Kind';
+  else if (cardValues.every(value => value === cardValues[0])) {
+    ranking = 'Three-of-a-Kind';
   }
 
-  // Straight
-  if (values.indexOf(cardValues[1]) === values.indexOf(cardValues[0]) + 1 &&
-      values.indexOf(cardValues[2]) === values.indexOf(cardValues[1]) + 1 ||
-      cardValues.every((value, index) => value === referenceArray[index])) {
-    return 'Straight';
+  else if (values.indexOf(cardValues[1]) === values.indexOf(cardValues[0]) + 1 &&
+           values.indexOf(cardValues[2]) === values.indexOf(cardValues[1]) + 1 ||
+           cardValues.every((value, index) => value === referenceArray[index])) {
+    ranking = 'Straight';
   }
 
-  // Flush
-  if (cardSuits.every(suit => suit === cardSuits[0])) {
-    return 'Flush';
+  else if (cardSuits.every(suit => suit === cardSuits[0])) {
+    ranking = 'Flush';
+  }
+
+  else if (values.indexOf(cardValues[1]) === values.indexOf(cardValues[0]) ||
+           values.indexOf(cardValues[2]) === values.indexOf(cardValues[1])) {
+    ranking = 'Pair';
+  }
+
+  else {
+    ranking = 'High Card';
+  }
+
+  return [cardValues, ranking];
+}
+
+function rankSameHands() {
+  const ranking = dealerHandInfo[1];
+
+  if (ranking === 'Mini Royal Flush') return 'Tie';
+
+  if (['Straight Flush', 'Three-of-a-Kind', 'Straight'].includes(ranking)) {
+    const dealerValue = dealerHandInfo[0].every((value, index) => value === referenceArray[index]) ? 1 : values.indexOf(dealerHandInfo[0][2]);
+    const playerValue = playerHandInfo[0].every((value, index) => value === referenceArray[index]) ? 1 : values.indexOf(playerHandInfo[0][2]);
+    
+    if (dealerValue > playerValue) return 'Dealer';
+    if (dealerValue < playerValue) return 'Player';
+    
+    return 'Tie';
+  }
+
+  if (['Flush', 'High Card'].includes(ranking)) {
+    for (let i = 2; i >= 0; i--) {
+      const dealerValue = values.indexOf(dealerHandInfo[0][i]);
+      const playerValue = values.indexOf(playerHandInfo[0][i]);
+    
+      if (dealerValue > playerValue) return 'Dealer';
+      if (dealerValue < playerValue) return 'Player';
+    }
+    
+    return 'Tie';    
   }
 
   // Pair
-  if (values.indexOf(cardValues[1]) === values.indexOf(cardValues[0]) ||
-      values.indexOf(cardValues[2]) === values.indexOf(cardValues[1])) {
-    return 'Pair';
-  }
+  const dealerValue = values.indexOf(dealerHandInfo[0].find(value => dealerHandInfo[0].indexOf(value) !== dealerHandInfo[0].lastIndexOf(value)));
+  const playerValue = values.indexOf(playerHandInfo[0].find(value => playerHandInfo[0].indexOf(value) !== playerHandInfo[0].lastIndexOf(value)));
+  
+  let dealerKicker;
+  let playerKicker;
 
-  // High Card
-  return 'High Card';
+  if (dealerValue > playerValue) return 'Dealer';
+  if (dealerValue < playerValue) return 'Player';
+
+  dealerKicker = values.indexOf(dealerHandInfo[0].find(value => dealerHandInfo[0].indexOf(value) === dealerHandInfo[0].lastIndexOf(value)));
+  playerKicker = values.indexOf(playerHandInfo[0].find(value => playerHandInfo[0].indexOf(value) === playerHandInfo[0].lastIndexOf(value)));
+
+  if (dealerKicker > playerKicker) return 'Dealer';
+  if (dealerKicker < playerKicker) return 'Player';
+
+  return 'Tie';
 }
