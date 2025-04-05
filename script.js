@@ -1,7 +1,7 @@
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace'];
 const suits = ['spades', 'hearts', 'clubs', 'diamonds'];
 const referenceArray = ['2', '3', 'ace']; // Referência para um A-2-3 Straight
-const rankingOrder = ['High Card', 'Pair', 'Flush', 'Straight', 'Three-of-a-Kind', 'Straight Flush', 'Mini Royal Flush'];
+const rankingOrder = ['High Card', 'Pair', 'Flush', 'Straight', 'Three Of A Kind', 'Straight Flush', 'Mini Royal Flush'];
 const bankrollElement = document.getElementById('player-bankroll');
 const images = document.querySelectorAll('img');
 const dealButton = document.getElementById('deal-button');
@@ -10,13 +10,40 @@ const foldButton = document.getElementById('fold-button');
 const betValuesDiv = document.getElementById('bet-values');
 const handResultDiv = document.getElementById('hand-result');
 
+// Payout Tables
+const pairPlus = {
+  miniRoyalFlush: 200,
+  straightFlush: 40,
+  threeOfAKind: 30,
+  straight: 6,
+  flush: 3,
+  pair: 1
+};
+const anteBonus = {
+  straightFlush: 5,
+  threeOfAKind: 4,
+  straight: 1
+};
+const sixCardBonus = {
+  royalFlush: 1000,
+  straightFlush: 200,
+  fourOfAKind: 50,
+  fullHouse: 25,
+  flush: 15,
+  straight: 10,
+  threeOfAKind: 5
+};
+
 let cards = [];
 let dealerCards;
 let playerCards;
+let inputs;
+let inputValues; // [ante, pair plus, 6 card bonus]
 let dealerHandInfo;
 let playerHandInfo;
 let bankrollValue = 100;
 let choseToPlay;
+let winner;
 
 bankrollElement.innerHTML = `<p>Bankroll: ${bankrollValue}</p>`;
 
@@ -77,8 +104,8 @@ function dealCards() {
 }
 
 function handleBets() {
-  const inputs = Array.from(document.querySelectorAll('input'));
-  const inputValues = inputs.map(input => Number(input.value));
+  inputs = Array.from(document.querySelectorAll('input'));
+  inputValues = inputs.map(input => Number(input.value));
 
   bankrollValue -= inputValues.reduce((accumulator, value) => accumulator + value, 0); // Soma os valores dos inputs e subtrai do saldo
   bankrollElement.innerHTML = `<p>Bankroll: ${bankrollValue}</p>`;
@@ -108,7 +135,13 @@ function handlePlayBet() {
 }
 
 function endHand() {
-  let winner;
+  determineWinner();
+  handlePayouts();
+}
+
+function determineWinner() {
+  playButton.style.display = 'none';
+  foldButton.style.display = 'none';
 
   // Info: [cardValues, ranking]
   dealerHandInfo = rankHand(dealerCards);
@@ -118,9 +151,6 @@ function endHand() {
     const dealerCard = document.getElementById(`dealer-card-${i}`);
     dealerCard.src = `${dealerCards[i - 1]}`;
   }
-
-  playButton.style.display = 'none';
-  foldButton.style.display = 'none';
 
   if (dealerHandInfo[1] === playerHandInfo[1]) {
     winner = rankSameHands();
@@ -180,7 +210,7 @@ function rankHand(hand) {
   }
   
   else if (cardValues.every(value => value === cardValues[0])) {
-    ranking = 'Three-of-a-Kind';
+    ranking = 'Three Of A Kind';
   }
 
   else if (values.indexOf(cardValues[1]) === values.indexOf(cardValues[0]) + 1 &&
@@ -249,4 +279,36 @@ function rankSameHands() {
   if (dealerKicker < playerKicker) return 'Player';
 
   return 'Tie';
+}
+
+function handlePayouts() {
+  const anteValue = inputValues[0];
+  const pairPlusValue = inputValues[1];
+  const sixCardBonusValue = inputValues[2];
+
+  // Ante/Play
+  if (choseToPlay) {
+    if (values.indexOf(dealerHandInfo[0][2]) >= 10 || dealerHandInfo[1] !== 'High Card') { // Dealer se qualifica
+      if (winner === 'Player') {
+        bankrollValue += 4 * anteValue;
+      } else if (winner === 'Tie') {
+        bankrollValue += 2 * anteValue;
+      }
+    } else {
+      bankrollValue += 3 * anteValue;
+    }
+  }
+
+  // Pair Plus
+  if (playerHandInfo[1] !== 'High Card' && pairPlusValue > 0) {
+    let ranking;
+    let multiplier;
+
+    ranking = playerHandInfo[1].replaceAll(' ', '');
+    ranking = ranking.charAt(0).toLowerCase() + ranking.slice(1);
+    multiplier = pairPlus[`${ranking}`];
+    bankrollValue += pairPlusValue + multiplier * pairPlusValue;
+  }
+
+  bankrollElement.innerHTML = `<p>Bankroll: ${bankrollValue}</p>`;
 }
